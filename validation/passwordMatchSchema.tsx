@@ -1,16 +1,17 @@
 import { z } from "zod";
+
 import { passwordSchema } from "./passwordSchema";
 
 export const passwordMatchSchema = z
   .object({
     password: passwordSchema,
-    passwordConfrim: z.string(),
+    passwordConfirm: z.string(),
   })
   .superRefine((data, ctx) => {
-    if (data.password !== data.passwordConfrim) {
+    if (data.password !== data.passwordConfirm) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        path: ["passwordConfrim"],
+        path: ["passwordConfirm"],
         message: "Password do not match",
       });
     }

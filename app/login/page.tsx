@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useRouter } from "next/navigation";
 
 import {
   Card,
@@ -32,7 +33,9 @@ const formSchema = z.object({
   email: z.string().email(),
   password: passwordSchema,
 });
-export default function RegisterPage() {
+export default function Login() {
+  const router = useRouter();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -44,10 +47,19 @@ export default function RegisterPage() {
   //   console.log(form);
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
-    await LoginWithCredentials({
+    const response = await LoginWithCredentials({
       email: data.email,
       password: data.password,
     });
+
+    if (response?.error) {
+      form.setError("root", {
+        type: "manual",
+        message: response.message,
+      });
+    } else {
+      router.push("/my-account");
+    }
   };
 
   return (
@@ -102,7 +114,11 @@ export default function RegisterPage() {
                 />
 
                 {/* Password Confirm Field */}
-
+                {form.formState.errors.root && (
+                  <FormMessage>
+                    {form.formState.errors.root.message}
+                  </FormMessage>
+                )}
                 <Button type="submit">Login</Button>
               </fieldset>
             </form>
