@@ -32,7 +32,9 @@ export default async function LoggedInLayout({
           <LogoutButton />
         </div>
       </nav>
-      <div className="flex-1 justify-center items-center">{children}</div>
+      <div className="flex-1 flex  justify-center items-center ">
+        {children}
+      </div>
     </div>
   );
 }
