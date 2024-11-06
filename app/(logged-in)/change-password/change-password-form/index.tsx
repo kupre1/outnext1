@@ -29,14 +29,17 @@ import Link from "next/link";
 import { passwordSchema } from "@/validation/passwordSchema";
 import { passwordMatchSchema } from "@/validation/passwordMatchSchema";
 import { changePassword } from "./action";
+import { useToast } from "@/hooks/use-toast";
 
 const formSchema = z
   .object({
     currentPassword: passwordSchema,
   })
   .and(passwordMatchSchema);
+
 export default function ChangePasswordForm() {
   const router = useRouter();
+  const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -58,6 +61,13 @@ export default function ChangePasswordForm() {
 
     if (response?.error) {
       form.setError("root", { message: response.message });
+    } else {
+      toast({
+        title: "Password Change",
+        description: "your password has updated",
+        className: "bg-green-500 text-white",
+      });
+      form.reset();
     }
   };
 
@@ -130,7 +140,7 @@ export default function ChangePasswordForm() {
           {form.formState.errors.root && (
             <FormMessage>{form.formState.errors.root.message}</FormMessage>
           )}
-          <Button type="submit">Login</Button>
+          <Button type="submit">change password</Button>
         </fieldset>
       </form>
     </FormProvider>
